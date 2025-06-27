@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>แจ้งลา - ระบบแก๊ง</title>
+  <style>
+    body {
+      background-color: #0f0f1e;
+      color: #fff;
+      font-family: 'Kanit', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    input, textarea, button {
+      padding: 10px;
+      margin: 10px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: none;
+      width: 300px;
+    }
+    button {
+      background-color: #ff1744;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #d50000;
+    }
+  </style>
+</head>
+<body>
+  <h1>📝 แจ้งลาล่วงหน้า</h1>
+
+  <input type="text" id="name" placeholder="ชื่อในเกม">
+  <input type="date" id="date">
+  <textarea id="reason" placeholder="เหตุผลในการลา" rows="4"></textarea>
+
+  <button onclick="submitLeave()">แจ้งลา</button>
+
+  <script>
+    function submitLeave() {
+      const name = document.getElementById('name').value.trim();
+      const date = document.getElementById('date').value;
+      const reason = document.getElementById('reason').value.trim();
+
+      if (!name || !date || !reason) {
+        alert("กรอกข้อมูลให้ครบก่อนส่ง!");
+        return;
+      }
+
+      const webhookUrl = "https://discord.com/api/webhooks/1388281850430099517/ddN9PescUuk2tR5Adhu7bC3Z_6sW04D8MU5-PAzEIkVnb4yIGiSACG9sEI9Tthj0Z0tI";
+
+      const payload = {
+        embeds: [
+          {
+            title: "📢 แจ้งลางาน",
+            color: 16711680, // สีแดง
+            fields: [
+              { name: "👤 ชื่อ", value: name, inline: true },
+              { name: "📅 วันที่ลา", value: date, inline: true },
+              { name: "✏️ เหตุผล", value: reason }
+            ],
+            timestamp: new Date().toISOString()
+          }
+        ]
+      };
+
+      fetch(webhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }).then(res => {
+        if (res.ok) {
+          alert("แจ้งลาสำเร็จแล้ว!");
+          document.getElementById('name').value = "";
+          document.getElementById('date').value = "";
+          document.getElementById('reason').value = "";
+        } else {
+          alert("แจ้งลาไม่สำเร็จ ลองใหม่อีกครั้ง");
+        }
+      });
+    }
+  </script>
+</body>
+</html>
